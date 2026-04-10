@@ -18,8 +18,11 @@ A framework for building visually coherent UIs, design systems, and interfaces â
 
 ## Installation
 
+Add the marketplace, then install:
+
 ```bash
-claude plugin install design-skills@<marketplace>
+/plugin marketplace add GithubAnant/skills
+/plugin install design-skills@anant-design
 ```
 
 Or test locally:
