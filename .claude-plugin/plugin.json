@@ -1,0 +1,8 @@
+{
+  "name": "design-skills",
+  "description": "A collection of design skills for Claude Code, including the 60-30-10 color rule for building visually coherent UIs.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Anant Singhal"
+  }
+}
