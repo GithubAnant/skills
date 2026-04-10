@@ -3,6 +3,10 @@
   "description": "A collection of design skills for Claude Code, including the 60-30-10 color rule for building visually coherent UIs.",
   "version": "1.0.0",
   "author": {
-    "name": "Anant Singhal"
-  }
+    "name": "Anant Singhal",
+    "url": "https://anants.studio"
+  },
+  "repository": "https://github.com/GithubAnant/skills",
+  "license": "MIT",
+  "keywords": ["design", "color", "ui", "design-system", "color-palette", "60-30-10"]
 }
