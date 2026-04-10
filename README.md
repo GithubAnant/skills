@@ -16,6 +16,16 @@ A framework for building visually coherent UIs, design systems, and interfaces �
 - Structuring CSS color variables/tokens
 - Visual hierarchy problems
 
+### Capy — Design System Extractor
+
+Scans React/Next.js repos to extract design tokens, discover components, and build a polished `/preview` route — all from the actual codebase.
+
+**Triggers when you ask about:**
+- Building a UI preview or component catalog
+- Extracting design tokens from a codebase
+- Auditing styles or design systems
+- Creating a `/preview` page
+
 ## Installation
 
 Add the marketplace, then install:
