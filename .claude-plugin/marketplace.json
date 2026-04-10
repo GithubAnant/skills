@@ -12,7 +12,7 @@
     {
       "name": "design-skills",
       "source": ".",
-      "description": "Design skills including the 60-30-10 color rule for building visually coherent UIs",
+      "description": "Design skills — 60-30-10 color rule and Capy design system inspector & preview builder",
       "version": "1.1.0"
     }
   ]

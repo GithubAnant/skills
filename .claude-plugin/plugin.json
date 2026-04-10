@@ -1,6 +1,6 @@
 {
   "name": "design-skills",
-  "description": "A collection of design skills for Claude Code, including the 60-30-10 color rule for building visually coherent UIs.",
+  "description": "Design skills for Claude Code — 60-30-10 color rule and Capy design system inspector & preview builder.",
   "version": "1.1.0",
   "author": {
     "name": "Anant Singhal",

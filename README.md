@@ -1,30 +1,41 @@
 # Design Skills
 
-A Claude Code plugin with design skills for building visually coherent UIs.
+A Claude Code plugin for building visually coherent UIs, extracting design systems, and generating component previews.
 
 ## Skills
 
+| Skill | What it does |
+|-------|-------------|
+| [60-30-10 Color Rule](#-60-30-10-color-rule) | Color palette framework adapted from cinematic color theory |
+| [Capy](#-capy--design-system-inspector--preview-builder) | Scans your codebase to extract tokens, discover components, and build a `/preview` route |
+
+---
+
 ### 60-30-10 Color Rule
 
-A framework for building visually coherent UIs, design systems, and interfaces — adapted from how professional cinematographers and production designers control color in film.
+> A framework for building visually coherent UIs — adapted from how cinematographers and production designers control color in film.
 
-**Triggers when you ask about:**
-- Choosing a color palette for an app or website
-- Why your UI looks "off" or too colorful
-- How to pick accent colors
-- Designing a dark or light mode theme
-- Structuring CSS color variables/tokens
-- Visual hierarchy problems
+**Example triggers:**
+`"pick a color palette"` · `"my UI looks off"` · `"how do I make my CTA pop"` · `"help with dark mode colors"` · `"structure my CSS color tokens"`
 
-### Capy — Design System Extractor
+---
 
-Scans React/Next.js repos to extract design tokens, discover components, and build a polished `/preview` route — all from the actual codebase.
+### Capy — Design System Inspector & Preview Builder
 
-**Triggers when you ask about:**
-- Building a UI preview or component catalog
-- Extracting design tokens from a codebase
-- Auditing styles or design systems
-- Creating a `/preview` page
+> Scans React/Next.js repos to extract CSS variables, discover components, detect the framework, and build a polished `/preview` route — all from the actual codebase, never hallucinated.
+
+**Subcommands:**
+
+| Command | Action |
+|---------|--------|
+| `/capy` | Full scan + build the `/preview` page |
+| `/capy design-system` | Scan + write `.capy/design-system.json` only |
+| `/capy update` | Incremental refresh — detect changes, update preview |
+
+**Example triggers:**
+`"build a component catalog"` · `"extract design tokens"` · `"audit my design system"` · `"create a /preview page"`
+
+---
 
 ## Installation
 
