@@ -1,12 +1,12 @@
 {
   "name": "design-skills",
-  "description": "Design skills for Claude Code — 60-30-10 color rule and Capy design system inspector & preview builder.",
-  "version": "1.1.0",
+  "description": "Personal Claude Code skills for design workflows, design system extraction, and GitHub Actions deploy automation.",
+  "version": "1.2.0",
   "author": {
     "name": "Anant Singhal",
     "url": "https://anants.studio"
   },
   "repository": "https://github.com/GithubAnant/skills",
   "license": "MIT",
-  "keywords": ["design", "color", "ui", "design-system", "color-palette", "60-30-10"]
+  "keywords": ["design", "color", "ui", "design-system", "github-actions", "vercel", "deploy"]
 }

@@ -1,0 +1,130 @@
+---
+name: setup-owner-deploy-trigger
+description: Configure or audit a GitHub Actions workflow that turns non-owner pushes into an owner-authored empty commit and optionally triggers a Vercel deploy hook. Use when Codex needs to set up this pattern in any repository, port the workflow between repos, verify that owner empty-commit automation is working, or explain/fix failures involving OWNER_GIT_PAT, VERCEL_DEPLOY_HOOK_URL, skipped owner-triggered runs, GitHub Actions push loops, branch protection, or Vercel deployments that only deploy from owner commits.
+---
+
+# Setup Owner Deploy Trigger
+
+## Purpose
+
+Set up a GitHub Actions workflow that runs when someone other than the repository owner pushes to the deploy branch, then uses the owner's PAT to push an empty commit as the owner and optionally calls a Vercel deploy hook.
+
+Use this pattern only when a downstream service needs an owner-originated push or when the repo intentionally wants owner-attributed empty deploy trigger commits. Prefer direct deploy hooks or GitHub App permissions when owner attribution is not required.
+
+## Fast Path
+
+1. Confirm the desired owner login, target branch, workflow filename, and whether Vercel deploy hook triggering is required.
+2. Confirm the repo can use a secret named `OWNER_GIT_PAT` containing a PAT owned by that exact owner login.
+3. If Vercel deploy hooks are used, confirm `VERCEL_DEPLOY_HOOK_URL` will be added as a repository secret.
+4. Run the bundled installer from the target repo:
+
+```bash
+python /path/to/setup-owner-deploy-trigger/scripts/install_owner_deploy_trigger.py --repo . --owner OWNER_LOGIN --branch main
+```
+
+5. Review the generated `.github/workflows/trigger-owner-deploy.yml`.
+6. Add the secrets in GitHub, commit the workflow, push it, then verify recent Actions runs.
+
+## Required Secrets
+
+Create repository or organization secrets before expecting the workflow to pass.
+
+`OWNER_GIT_PAT`:
+Personal access token owned by the repository owner account. A fine-grained token should have access to the target repo and `Contents: Read and write`. A classic token generally needs `repo` for private repos. Do not use `GITHUB_TOKEN` for this pattern because pushes made with `GITHUB_TOKEN` do not reliably trigger follow-up workflow runs and will not represent the owner PAT identity.
+
+`VERCEL_DEPLOY_HOOK_URL`:
+Vercel deploy hook URL. Required only when the workflow includes the deploy hook step. Store the full URL as a secret; never commit it.
+
+Useful `gh` commands:
+
+```bash
+gh secret set OWNER_GIT_PAT --repo OWNER/REPO
+gh secret set VERCEL_DEPLOY_HOOK_URL --repo OWNER/REPO
+```
+
+Paste values interactively when prompted. Avoid putting secret values directly in shell history.
+
+## Workflow Rules
+
+Generate or maintain a workflow with these properties:
+
+- Trigger on `push` to the deploy branch and `workflow_dispatch`.
+- Add a job-level guard: `if: github.actor != 'OWNER_LOGIN'`.
+- Use `actions/checkout@v4` with `token: ${{ secrets.OWNER_GIT_PAT }}`.
+- Configure `git user.name` and `git user.email` as the owner login and noreply address.
+- Pull the latest deploy branch with `git pull --ff-only` before creating the empty commit.
+- Push `git commit --allow-empty -m "chore: trigger deploy"` to the same branch.
+- Optionally call the Vercel deploy hook after the empty commit push.
+
+The guard is essential. The owner-created empty commit triggers the workflow again, but the second run must be skipped because the actor is the owner. Without that guard, the workflow can loop.
+
+## Installer Script
+
+Use `scripts/install_owner_deploy_trigger.py` for repeatable setup.
+
+Common commands:
+
+```bash
+# Infer repo root from current directory, owner from origin URL when possible.
+python scripts/install_owner_deploy_trigger.py --repo .
+
+# Explicit owner and branch.
+python scripts/install_owner_deploy_trigger.py --repo . --owner creativeaihack --branch main
+
+# Preview without writing.
+python scripts/install_owner_deploy_trigger.py --repo . --owner creativeaihack --dry-run
+
+# Omit the Vercel hook step.
+python scripts/install_owner_deploy_trigger.py --repo . --owner creativeaihack --skip-vercel-hook
+
+# Overwrite an existing workflow file after review.
+python scripts/install_owner_deploy_trigger.py --repo . --owner creativeaihack --force
+```
+
+Prefer explicit `--owner` when there is any ambiguity around remotes, forks, or mirrors.
+
+## Verification
+
+After pushing the workflow to GitHub:
+
+```bash
+gh workflow list --repo OWNER/REPO
+gh run list --repo OWNER/REPO --workflow "Owner empty-commit + Vercel deploy" --limit 10
+git log --oneline --author OWNER_LOGIN --grep "chore: trigger deploy" -n 10
+```
+
+Expected behavior:
+
+- A non-owner push to the deploy branch creates a successful workflow run.
+- That run pushes an empty `chore: trigger deploy` commit authored and committed as the owner.
+- The owner empty commit creates a second workflow run that is `skipped`.
+- Owner-originated normal commits are also skipped by the guarded job.
+
+If the empty commit does not appear, inspect the failed run logs first, then verify PAT scope, secret name, branch protection, and whether the owner login exactly matches `github.actor`.
+
+## Failure Modes
+
+`Resource not accessible by integration` or checkout/push permission errors:
+The PAT is missing, invalid, lacks contents write permission, lacks repo access, or branch protection blocks the token owner.
+
+Workflow loops:
+The `if: github.actor != 'OWNER_LOGIN'` guard is missing, misspelled, or using a login that does not match the PAT owner.
+
+Vercel hook fails:
+The `VERCEL_DEPLOY_HOOK_URL` secret is missing or invalid, or Vercel has disabled/regenerated the hook.
+
+Push rejected:
+The branch advanced during the run, branch protection requires checks, signed commits, linear history constraints, or direct pushes by the PAT owner are blocked.
+
+No follow-up workflow after empty commit:
+The workflow used `GITHUB_TOKEN` instead of a PAT, Actions are disabled, or repository workflow permissions block the event.
+
+## Safety Checks
+
+Before implementing in a repo:
+
+- Do not commit PATs or deploy hook URLs.
+- Do not bypass branch protection unless the owner explicitly accepts that policy.
+- Do not use this pattern to hide authorship; explain that git author/committer and GitHub pusher identity/audit logs are related but not identical.
+- Keep the commit message boring and searchable, usually `chore: trigger deploy`.
+- Document the reason for the workflow in the workflow name or a nearby comment if the repo has multiple deploy paths.

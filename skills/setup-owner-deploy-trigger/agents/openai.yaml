@@ -1,0 +1,4 @@
+interface:
+  display_name: "Owner Deploy Trigger"
+  short_description: "Create owner empty-commit deploy workflows"
+  default_prompt: "Use $setup-owner-deploy-trigger to add an owner empty-commit deploy workflow to this repo."

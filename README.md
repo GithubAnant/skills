@@ -1,6 +1,6 @@
-# Design Skills
+# Anant Skills
 
-A Claude Code plugin for building visually coherent UIs, extracting design systems, and generating component previews.
+A Claude Code plugin for design workflows, repo automation, and reusable agent procedures.
 
 ## Skills
 
@@ -8,6 +8,7 @@ A Claude Code plugin for building visually coherent UIs, extracting design syste
 |-------|-------------|
 | [60-30-10 Color Rule](#-60-30-10-color-rule) | Color palette framework adapted from cinematic color theory |
 | [Capy](#-capy--design-system-inspector--preview-builder) | Scans your codebase to extract tokens, discover components, and build a `/preview` route |
+| [Owner Deploy Trigger](#owner-deploy-trigger) | Sets up owner empty-commit GitHub Actions deploy triggers |
 
 ---
 
@@ -34,6 +35,15 @@ A Claude Code plugin for building visually coherent UIs, extracting design syste
 
 **Example triggers:**
 `"build a component catalog"` · `"extract design tokens"` · `"audit my design system"` · `"create a /preview page"`
+
+---
+
+### Owner Deploy Trigger
+
+> Configures a GitHub Actions workflow that turns non-owner pushes into owner-authored empty deploy trigger commits, with optional Vercel deploy hook support.
+
+**Example triggers:**
+`"set up owner deploy trigger"` · `"make non-owner commits trigger owner deploys"` · `"audit the OWNER_GIT_PAT workflow"` · `"why is chore: trigger deploy skipped"`
 
 ---
 
