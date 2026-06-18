@@ -1,0 +1,27 @@
+{
+  "siteConfig": {
+    "name": "My Site",
+    "tagline": "A short tagline goes here",
+    "description": "A longer description used for SEO and social cards.",
+    "domain": "https://example.com"
+  },
+  "hero": {
+    "badge": "New",
+    "title": "Welcome to my site",
+    "subtitle": "Edit this copy from the /editor page — it commits to GitHub.",
+    "image": "/images/uploads/hero.jpg",
+    "imageAlt": "Hero image"
+  },
+  "navLinks": [
+    { "id": "nav-1", "label": "Home", "href": "/" },
+    { "id": "nav-2", "label": "About", "href": "/about" }
+  ],
+  "features": [
+    {
+      "id": "feature-1",
+      "title": "First feature",
+      "description": "Describe the first feature here.",
+      "icon": "sparkles"
+    }
+  ]
+}

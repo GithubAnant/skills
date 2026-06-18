@@ -9,6 +9,7 @@ A Claude Code plugin for design workflows, repo automation, and reusable agent p
 | [60-30-10 Color Rule](#-60-30-10-color-rule) | Color palette framework adapted from cinematic color theory |
 | [Capy](#-capy--design-system-inspector--preview-builder) | Scans your codebase to extract tokens, discover components, and build a `/preview` route |
 | [Owner Deploy Trigger](#owner-deploy-trigger) | Sets up owner empty-commit GitHub Actions deploy triggers |
+| [Next.js GitHub CMS](#nextjs-github-cms) | Drops a password-protected `/editor` page into a Next.js site that commits content + images to GitHub — no database |
 
 ---
 
@@ -44,6 +45,15 @@ A Claude Code plugin for design workflows, repo automation, and reusable agent p
 
 **Example triggers:**
 `"set up owner deploy trigger"` · `"make non-owner commits trigger owner deploys"` · `"audit the OWNER_GIT_PAT workflow"` · `"why is chore: trigger deploy skipped"`
+
+---
+
+### Next.js GitHub CMS
+
+> Installs a self-hosted, no-database CMS into a Next.js (App Router) site: a password-protected `/editor` page where a non-technical user edits structured content and images, with every save committed to GitHub via the REST API. Pairs with **Owner Deploy Trigger** for the Vercel free-plan cross-account deploy fix.
+
+**Example triggers:**
+`"add an editor page so my client can edit the site"` · `"build a CMS without a database"` · `"store site content in GitHub"` · `"let me edit copy and images and auto-deploy"`
 
 ---
 
