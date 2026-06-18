@@ -1,0 +1,484 @@
+/* ── Editor Page — self-contained CMS styling ──
+ *
+ * This file defines its OWN design tokens scoped to `.page` so it works in any
+ * project with zero global CSS. If your project already defines --bg-primary,
+ * --space-*, --fg-* etc. globally, the values here are overridden naturally —
+ * or you can delete this :where(.page) block to inherit your theme.
+ */
+.page:where(.page) {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #141414;
+  --bg-tertiary: #1f1f1f;
+  --fg-primary: #f5f5f5;
+  --fg-secondary: #cccccc;
+  --fg-tertiary: #999999;
+  --fg-muted: #6b6b6b;
+  --border-default: rgba(255, 255, 255, 0.08);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+  --nav-height: 0px;
+  --transition-fast: 120ms ease;
+  --transition-base: 200ms ease;
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.page {
+  min-height: 100svh;
+  padding: calc(var(--nav-height) + var(--space-xl)) var(--space-xl) var(--space-3xl);
+  background: var(--bg-primary);
+  color: var(--fg-primary);
+  overflow-y: auto;
+}
+
+.container {
+  max-width: 1320px;
+  margin: 0 auto;
+  display: grid;
+  gap: var(--space-xl);
+}
+
+/* ── Login card ── */
+.loginCard {
+  width: 100%;
+  max-width: 380px;
+  padding: 2.5rem 2rem;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 16px 48px rgba(0, 0, 0, 0.4);
+  text-align: center;
+}
+
+.loginEyebrow {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--fg-muted);
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.loginTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.4rem;
+  background: linear-gradient(135deg, #fff 30%, #888);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Header ── */
+.header {
+  display: grid;
+  gap: var(--space-sm);
+  padding-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--border-default);
+}
+
+.title {
+  font-size: clamp(1.6rem, 2.4vw, 2.2rem);
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+  font-weight: 500;
+  background: linear-gradient(135deg, #fff 30%, #999);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  color: var(--fg-tertiary);
+  font-size: 0.9rem;
+}
+
+/* ── Layout ── */
+.layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+.sidebar {
+  position: sticky;
+  top: calc(var(--nav-height) + var(--space-md));
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.sidebarTitle {
+  font-size: 0.7rem;
+  color: var(--fg-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+}
+
+.sideLinks {
+  list-style: none;
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+}
+
+.sideButton {
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  color: var(--fg-secondary);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.65rem;
+  font: inherit;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.sideButton:hover {
+  color: var(--fg-primary);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.content {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+/* ── Sticky toolbar ── */
+.toolbar {
+  position: sticky;
+  top: calc(var(--nav-height) + var(--space-sm));
+  z-index: 15;
+  border-radius: var(--radius-md);
+  background: rgba(10, 10, 10, 0.92);
+  backdrop-filter: blur(16px) saturate(1.5);
+  -webkit-backdrop-filter: blur(16px) saturate(1.5);
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: var(--shadow-md);
+}
+
+/* ── Section panels ── */
+.panel {
+  border-radius: var(--radius-lg);
+  background: var(--bg-secondary);
+  padding: var(--space-lg);
+  display: grid;
+  gap: var(--space-lg);
+  transition: box-shadow var(--transition-base);
+}
+
+.panel:hover {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.sectionTitle {
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0;
+  color: var(--fg-primary);
+}
+
+.sectionHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.sectionSub {
+  color: var(--fg-tertiary);
+  font-size: 0.84rem;
+}
+
+/* ── Cards / grids ── */
+.cards2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-md);
+}
+
+.grid2 {
+  display: grid;
+  gap: var(--space-md);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid3 {
+  display: grid;
+  gap: var(--space-sm);
+  grid-template-columns: 1fr 1fr auto;
+  align-items: center;
+}
+
+/* ── Form fields ── */
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.label {
+  font-size: 0.75rem;
+  color: var(--fg-tertiary);
+  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  border: none;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--fg-primary);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.75rem;
+  font: inherit;
+  font-size: 0.92rem;
+  transition: background var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--fg-muted);
+}
+
+.input:hover,
+.select:hover,
+.textarea:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+.textarea {
+  min-height: 84px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* ── Row cards ── */
+.rowCard {
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.02);
+  padding: var(--space-md);
+  display: grid;
+  gap: var(--space-md);
+  transition: background var(--transition-fast);
+}
+
+.rowCard:hover {
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.subRow {
+  display: grid;
+  gap: 6px;
+  padding: var(--space-sm);
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: var(--radius-sm);
+}
+
+/* ── Buttons ── */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.button {
+  border: none;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--fg-secondary);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.85rem;
+  font: inherit;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-weight: 500;
+}
+
+.button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--fg-primary);
+}
+
+.button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.primary {
+  background: #fff;
+  color: #000;
+  font-weight: 600;
+}
+
+.primary:hover:not(:disabled) {
+  background: #e0e0e0;
+  color: #000;
+}
+
+.small {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.78rem;
+}
+
+/* ── JSON editor ── */
+.jsonTextarea {
+  width: 100%;
+  min-height: 34vh;
+  resize: vertical;
+  border: none;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--fg-primary);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  line-height: 1.65;
+  transition: box-shadow var(--transition-fast);
+}
+
+.jsonTextarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+.fieldHelp {
+  color: var(--fg-muted);
+  font-size: 0.72rem;
+}
+
+.fieldHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+/* ── Image upload ── */
+.imageRow {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.imageControls {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.uploadInput {
+  color: var(--fg-tertiary);
+  font-size: 0.82rem;
+}
+
+.uploadInput::file-selector-button {
+  border: none;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--fg-secondary);
+  border-radius: var(--radius-sm);
+  padding: 0.4rem 0.7rem;
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+  margin-right: 0.5rem;
+  transition: background var(--transition-fast);
+}
+
+.uploadInput::file-selector-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.thumb {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  background: var(--bg-tertiary);
+}
+
+.thumbPlaceholder {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-sm);
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  display: grid;
+  place-items: center;
+  color: var(--fg-muted);
+  font-size: 0.68rem;
+}
+
+/* ── Status messages ── */
+.status {
+  font-size: 0.88rem;
+  font-weight: 500;
+  padding: 0.35rem 0;
+}
+
+.ok {
+  color: #4ade80;
+}
+
+.error {
+  color: #f87171;
+}
+
+.hint {
+  color: var(--fg-muted);
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+/* ── Responsive ── */
+@media (max-width: 860px) {
+  .page {
+    padding: calc(var(--nav-height) + var(--space-md)) var(--space-md) var(--space-2xl);
+  }
+
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+  }
+
+  .toolbar {
+    top: calc(var(--nav-height) + 2px);
+  }
+
+  .grid2,
+  .cards2 {
+    grid-template-columns: 1fr;
+  }
+}
