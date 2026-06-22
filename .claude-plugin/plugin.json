@@ -1,12 +1,12 @@
 {
   "name": "design-skills",
   "description": "Personal Claude Code skills for design workflows, design system extraction, GitHub Actions deploy automation, and a Next.js GitHub-backed CMS.",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "author": {
     "name": "Anant Singhal",
     "url": "https://anants.studio"
   },
   "repository": "https://github.com/GithubAnant/skills",
   "license": "MIT",
-  "keywords": ["design", "color", "ui", "design-system", "github-actions", "vercel", "deploy", "cms", "nextjs", "editor"]
+  "keywords": ["design", "color", "ui", "design-system", "github-actions", "vercel", "deploy", "cms", "nextjs", "editor", "blur", "backdrop-filter", "css"]
 }

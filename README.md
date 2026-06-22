@@ -10,6 +10,7 @@ A Claude Code plugin for design workflows, repo automation, and reusable agent p
 | [Capy](#-capy--design-system-inspector--preview-builder) | Scans your codebase to extract tokens, discover components, and build a `/preview` route |
 | [Owner Deploy Trigger](#owner-deploy-trigger) | Sets up owner empty-commit GitHub Actions deploy triggers |
 | [Next.js GitHub CMS](#nextjs-github-cms) | Drops a password-protected `/editor` page into a Next.js site that commits content + images to GitHub — no database |
+| [Progressive Blur](#progressive-blur) | Layered `backdrop-filter` masks that fade a soft progressive blur from the top or bottom edge of the viewport |
 
 ---
 
@@ -54,6 +55,15 @@ A Claude Code plugin for design workflows, repo automation, and reusable agent p
 
 **Example triggers:**
 `"add an editor page so my client can edit the site"` · `"build a CMS without a database"` · `"store site content in GitHub"` · `"let me edit copy and images and auto-deploy"`
+
+---
+
+### Progressive Blur
+
+> A layered `backdrop-filter` blur that fades softly in from the top or bottom edge of the viewport. Uses stacked masked layers (0.5px → 64px) for a smooth depth gradient rather than a hard blur line. Ships top and bottom snippets plus knobs for height, strength, direction, and step count.
+
+**Example triggers:**
+`"add a progressive blur"` · `"gradient blur overlay at the bottom"` · `"stepped backdrop-filter that fades from an edge"` · `"soft blur fade over my footer"`
 
 ---
 
