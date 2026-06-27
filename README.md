@@ -11,6 +11,7 @@ A Claude Code plugin for design workflows, repo automation, and reusable agent p
 | [Owner Deploy Trigger](#owner-deploy-trigger) | Sets up owner empty-commit GitHub Actions deploy triggers |
 | [Next.js GitHub CMS](#nextjs-github-cms) | Drops a password-protected `/editor` page into a Next.js site that commits content + images to GitHub — no database |
 | [Progressive Blur](#progressive-blur) | Layered `backdrop-filter` masks that fade a soft progressive blur from the top or bottom edge of the viewport |
+| [Shine Sweep Button](#shine-sweep-button) | A glistening diagonal light streak that glides across a button on hover — and glides back out at matching speed |
 
 ---
 
@@ -64,6 +65,15 @@ A Claude Code plugin for design workflows, repo automation, and reusable agent p
 
 **Example triggers:**
 `"add a progressive blur"` · `"gradient blur overlay at the bottom"` · `"stepped backdrop-filter that fades from an edge"` · `"soft blur fade over my footer"`
+
+---
+
+### Shine Sweep Button
+
+> A glistening diagonal band of light that glides across a button on hover and glides back out at matching speed — that premium SaaS landing-page glint. Uses a clipped, skewed gradient pseudo-element whose `left` is animated by a CSS `transition` (not a keyframe), so entry and exit feel symmetric. Ships the canonical recipe plus knobs for speed, width, brightness, and slant, with adapts for Tailwind and styled-components.
+
+**Example triggers:**
+`"make the button glisten on hover"` · `"add a shine sweep to my CTA"` · `"that moving glare thing on buttons"` · `"glossy hover but don't make it jump"`
 
 ---
 
