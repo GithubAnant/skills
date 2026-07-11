@@ -13,7 +13,7 @@ flowchart LR
     Scene
     LoadingCanvas
     InspectableViewer
-    children["page children\n(scroll)"]
+    children["page children\n(scroll · lg:mt-100dvh)"]
   end
   subgraph canvas [R3F Canvas]
     AC[AnimationController]
@@ -181,6 +181,12 @@ Per mesh:
 ## Physics (optional per route)
 
 `@react-three/rapier` loaded dynamically. Blog scene: lamp physics. Basketball: separate `PhysicsWorld`. Keep `paused` when scene inactive.
+
+## HTML content vs canvas
+
+Canvas and page copy are **separate layers**. All headlines, CTAs, and spec cards live in `layout-container` children with `lg:mt-[100dvh]` — never as absolute overlays on the canvas div.
+
+See [html-layout.md](html-layout.md) for ContentWrapper template, z-index stack, and anti-patterns.
 
 ## File index (reference repo)
 

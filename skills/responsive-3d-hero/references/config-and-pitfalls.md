@@ -84,6 +84,19 @@ pnpm dev
 
 Hard-refresh browser. Turbopack/webpack may cache old GLB paths during dev.
 
+## HTML layout overlap (most common scaffold bug)
+
+Symptoms: two headlines at the same spot ("Stones…" + "The courtyard…"), MOBILE/DESKTOP/ROUTES cards on top of h1, unreadable text, z-index chaos.
+
+| Cause | Fix |
+|-------|-----|
+| `layout-container` missing `lg:mt-[100dvh]` | Add margin when canvas visible — pushes HTML below fixed viewport |
+| Hero copy in `absolute`/`fixed` overlay **and** Intro section | Remove overlay; one Intro in document flow |
+| Field notes / spec cards at viewport origin | Move to section after Intro or sidebar grid column |
+| Two `<h1>` on same route | One h1; field notes title is `<h2>` in lower section |
+
+Full patterns and anti-patterns: [html-layout.md](html-layout.md).
+
 ## Canvas visibility blacklist
 
 `content-wrapper.tsx` hides canvas on:

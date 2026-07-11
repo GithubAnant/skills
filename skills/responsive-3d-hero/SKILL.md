@@ -29,7 +29,30 @@ Build a **fixed-viewport 3D hero** with scrollable HTML content, per-route camer
 | Route → scene | `src/components/navigation-handler/index.tsx` |
 | Wireframe loader | `src/components/loading/`, `src/workers/loading-worker.tsx` |
 
-Deep dives: [references/architecture.md](references/architecture.md) · [references/config-and-pitfalls.md](references/config-and-pitfalls.md) · [references/loading-and-shaders.md](references/loading-and-shaders.md)
+Deep dives: [references/html-layout.md](references/html-layout.md) · [references/architecture.md](references/architecture.md) · [references/config-and-pitfalls.md](references/config-and-pitfalls.md) · [references/loading-and-shaders.md](references/loading-and-shaders.md)
+
+## HTML content layout (read before writing JSX)
+
+**Most common scaffold bug:** multiple headlines stacked, field-notes cards overlapping the h1, unreadable z-index mess. Root cause is almost always **HTML placed on the canvas layer** instead of in scroll flow below it.
+
+### Two layers — never merge them
+
+| Layer | What lives here | Position |
+|-------|-----------------|----------|
+| **Canvas** | R3F `<Scene />`, wireframe loader only | `lg:fixed lg:h-[100svh] lg:z-0` |
+| **HTML content** | h1, body, CTAs, spec cards, field notes | Normal flow in `layout-container` with `lg:mt-[100dvh]` |
+
+On desktop the canvas is pinned for the first viewport. Page copy starts **below** that viewport (`lg:mt-[100dvh]`), then scrolls up over the 3D background. **Do not** put hero headlines or spec cards in `absolute`/`fixed` positions over the canvas.
+
+### Hard rules
+
+1. **One h1 per route** — subtitle is `<p>`, not a second headline block.
+2. **Never stack two hero copy blocks** at the same viewport position (no overlay h1 + Intro h1).
+3. **Field notes / spec cards** (MOBILE, DESKTOP, ROUTES) go in a section **below** Intro, or in a sidebar grid column — not at `top-0` overlapping the h1.
+4. **Required shell:** ContentWrapper with canvas div + `layout-container` children (see template below).
+5. **Z-index:** canvas `z-0`, content `z-10`, navbar/modals `z-50+`.
+
+Full anti-patterns, grid sidebar pattern, and symptom table: **[references/html-layout.md](references/html-layout.md)**.
 
 ## When to use
 
@@ -113,7 +136,8 @@ Copy and track:
 - [ ] 4. 3d-config.ts with ≥1 scene (camera + postprocessing)
 - [ ] 5. fetch-assets-local.ts merge → AssetsResult interface
 - [ ] 6. Site layout: await fetchAssets() → AssetsProvider
-- [ ] 7. ContentWrapper: fixed canvas + scrollable children
+- [ ] 7. ContentWrapper: fixed canvas + `layout-container` with `lg:mt-[100dvh]` (see html-layout.md)
+- [ ] 7b. ONE h1 on homepage; field notes / spec cards in section below Intro — not overlapping
 - [ ] 8. Scene: dynamic import, ssr:false, frameloop demand
 - [ ] 9. NavigationHandler: pathname → currentScene
 - [ ] 10. Map: useKTX2GLTF + traverse → global shader materials
@@ -168,12 +192,31 @@ Merge in `fetch-assets-local.ts` — map flat `posX/tarX` to `[x,y,z]` tuples (s
 
 ### 3 — Layout integration
 
-**`content-wrapper.tsx` pattern:**
+**Read [references/html-layout.md](references/html-layout.md) first.** This step is where scaffolds break if skipped.
 
-- Canvas container: `h-[80svh] lg:fixed lg:h-[100svh]` — mobile shows partial hero; desktop pins full viewport.
-- Page content: `lg:mt-[100dvh]` so HTML scrolls *below* the fixed canvas on large screens.
-- Blacklist paths that should hide canvas (contact, individual posts, etc.).
+**`content-wrapper.tsx` pattern (required):**
+
+```tsx
+<>
+  {/* Canvas — Scene only, no hero copy here */}
+  <div className="canvas-container relative h-[80svh] w-full lg:fixed lg:h-[100svh] lg:z-0">
+    <Scene />
+  </div>
+
+  {/* All page HTML — scroll flow, starts below fixed canvas on desktop */}
+  <div className={cn("layout-container relative z-10", shouldShowCanvas && "lg:mt-[100dvh]")}>
+    {children}
+  </div>
+</>
+```
+
+- Canvas: `h-[80svh] lg:fixed lg:h-[100svh]` — mobile in flow; desktop pinned background.
+- Content: **`lg:mt-[100dvh]` is mandatory** when canvas shows — without it, Intro and field notes render at y=0 on top of each other.
+- Homepage: **one `<Intro />` section** with a single h1; spec cards in a later `<FieldNotes />` section (see reference `(home)/page.tsx` + `intro.tsx`).
+- Blacklist paths that hide canvas (contact, individual posts, etc.).
 - `dynamic(() => import Scene, { ssr: false })` inside `ErrorBoundary`.
+
+**Do not:** absolute hero overlay + Intro section with different headlines; field notes cards at viewport origin; multiple h1 elements in the first screen.
 
 **`scene/index.tsx` essentials:**
 
@@ -253,6 +296,7 @@ Detect touch-only: `ontouchstart` + `(pointer: coarse)` without `(pointer: fine)
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
+| Headlines stacked / field notes on h1 | Missing `lg:mt-[100dvh]`; absolute hero + Intro; duplicate h1 blocks | Follow [html-layout.md](references/html-layout.md); one Intro section; cards below fold |
 | Black canvas, default camera | Empty `scenes` in config | Populate `3d-config.ts` from upstream export; never ship placeholder |
 | Stale GLB after replace | `.next` cache + immutable CDN | Change hashed URL in manifest; `rm -rf .next` |
 | Assets 404 | Manifest URL ≠ disk path | Run verify script; hash-rename files |
@@ -295,3 +339,4 @@ Before calling done:
 - [ ] No Leva fly mode in production
 - [ ] Verify script passes
 - [ ] Lighthouse: canvas doesn't block LCP text (content below fold on mobile)
+- [ ] Desktop: no overlapping headlines; field notes readable below or beside Intro (not on h1)
