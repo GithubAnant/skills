@@ -13,6 +13,7 @@ A Claude Code plugin for design workflows, repo automation, and reusable agent p
 | [Progressive Blur](#progressive-blur) | Layered `backdrop-filter` masks that fade a soft progressive blur from the top or bottom edge of the viewport |
 | [Shine Sweep Button](#shine-sweep-button) | A glistening diagonal light streak that glides across a button on hover — and glides back out at matching speed |
 | [Infinite Pan Grid](#infinite-pan-grid) | Smooth bidirectional infinite 2D pan grids in React/Next.js — GPU transform, no scrollbars, no lag |
+| [Responsive 3D Hero](#responsive-3d-hero) | basement.studio-style wireframe R3F heroes in Next.js — per-route cameras, postFX, asset manifests, no Sanity |
 
 ---
 
@@ -84,6 +85,15 @@ A Claude Code plugin for design workflows, repo automation, and reusable agent p
 
 **Example triggers:**
 `"infinite scroll grid in all directions"` · `"panning tile wall without scrollbars"` · `"fix laggy infinite grid"` · `"2D infinite canvas in React"` · `"bidirectional scroll no snap"`
+
+---
+
+### Responsive 3D Hero
+
+> Builds responsive wireframe/interactive 3D hero sections in Next.js App Router with React Three Fiber — fixed canvas, per-route cameras, shader postprocessing, GLB asset manifests, and offscreen loading transitions. Hardcoded config pattern from the basement-studio-clean fork (no Sanity CMS).
+
+**Example triggers:**
+`"build a 3D wireframe hero"` · `"basement.studio landing page"` · `"R3F scroll-linked camera"` · `"per-route 3D scene config"` · `"wireframe GLB loading intro"`
 
 ---
 
