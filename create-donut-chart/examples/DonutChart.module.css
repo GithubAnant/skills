@@ -1,0 +1,89 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 300px;
+  background: var(--bg-surface, #111114);
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+.donutWrap {
+  display: flex;
+  justify-content: center;
+  padding: 0.25rem 0 1.5rem;
+}
+
+.donutSvg {
+  width: 168px;
+  height: 168px;
+  overflow: visible;
+}
+
+.donutSeg {
+  cursor: pointer;
+  transition: stroke-width 0.18s ease, opacity 0.18s ease;
+}
+
+.donutNum {
+  fill: var(--text-primary, #fafafa);
+  font-family: var(--font-display, inherit);
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.donutSub {
+  fill: var(--text-secondary, #6a6a72);
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3125rem 0.375rem;
+  font-size: 0.6875rem;
+  color: var(--text-secondary, #9a9aa2);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.legendActive {
+  background: var(--bg-hover, #1a1a1e);
+  color: var(--text-primary, #f2f2f2);
+}
+
+.legendDot {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+}
+
+.legendName {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.legendVal {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary, #6a6a72);
+}
+
+.legendActive .legendVal {
+  color: var(--text-muted, #c8c8ce);
+}
