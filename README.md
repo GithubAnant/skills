@@ -14,6 +14,7 @@ A Claude Code plugin for design workflows, repo automation, and reusable agent p
 | [Shine Sweep Button](#shine-sweep-button) | A glistening diagonal light streak that glides across a button on hover — and glides back out at matching speed |
 | [Infinite Pan Grid](#infinite-pan-grid) | Smooth bidirectional infinite 2D pan grids in React/Next.js — GPU transform, no scrollbars, no lag |
 | [Responsive 3D Hero](#responsive-3d-hero) | basement.studio-style wireframe R3F heroes in Next.js — per-route cameras, postFX, asset manifests, no Sanity |
+| [Create Donut Chart](#create-donut-chart) | Build lightweight, interactive, dependency-free custom SVG donut charts in React |
 
 ---
 
@@ -94,6 +95,15 @@ A Claude Code plugin for design workflows, repo automation, and reusable agent p
 
 **Example triggers:**
 `"build a 3D wireframe hero"` · `"basement.studio landing page"` · `"R3F scroll-linked camera"` · `"per-route 3D scene config"` · `"wireframe GLB loading intro"`
+
+---
+
+### Create Donut Chart
+
+> Builds a high-quality, interactive, dependency-free SVG donut chart in React without heavy charting libraries. Maps data to SVG circle circumferences with `strokeDasharray`, sweeping entry animations, and hover-linked interactive legends.
+
+**Example triggers:**
+`"make a donut chart"` · `"build a pie chart"` · `"data visualization without recharts"` · `"circular chart with legend"`
 
 ---
 
