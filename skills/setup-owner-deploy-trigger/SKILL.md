@@ -1,21 +1,35 @@
 ---
 name: setup-owner-deploy-trigger
-description: Configure or audit a GitHub Actions workflow that turns non-owner pushes into an owner-authored empty commit and optionally triggers a Vercel deploy hook. Use when Codex needs to set up this pattern in any repository, port the workflow between repos, verify that owner empty-commit automation is working, or explain/fix failures involving OWNER_GIT_PAT, VERCEL_DEPLOY_HOOK_URL, skipped owner-triggered runs, GitHub Actions push loops, branch protection, or Vercel deployments that only deploy from owner commits.
+description: Configure or audit a GitHub Actions workflow that turns non-owner pushes into an owner-authored empty commit so Vercel Hobby (and similar) deploys from the connected account owner. Optionally triggers a Vercel deploy hook as a fallback. Use when Codex needs to set up this pattern in any repository, port the workflow between repos, verify that owner empty-commit automation is working, or explain/fix failures involving OWNER_GIT_PAT, VERCEL_DEPLOY_HOOK_URL, skipped owner-triggered runs, GitHub Actions push loops, branch protection, blocked deploy hooks, or Vercel deployments that only deploy from owner commits.
 ---
 
 # Setup Owner Deploy Trigger
 
 ## Purpose
 
-Set up a GitHub Actions workflow that runs when someone other than the repository owner pushes to the deploy branch, then uses the owner's PAT to push an empty commit as the owner and optionally calls a Vercel deploy hook.
+Set up a GitHub Actions workflow that runs when someone other than the repository owner pushes to the deploy branch, then uses the owner's PAT to push an empty commit as the owner.
 
-Use this pattern only when a downstream service needs an owner-originated push or when the repo intentionally wants owner-attributed empty deploy trigger commits. Prefer direct deploy hooks or GitHub App permissions when owner attribution is not required.
+**Primary pattern (recommended):** owner empty-commit only. This fixes Vercel Hobby's pusher-attribution rule: Hobby only auto-builds pushes attributed to the Vercel-connected GitHub account. Non-owner pushes land on `main` but do not deploy until an owner-attributed push exists. The workflow pushes `chore: trigger deploy` as the owner; Vercel picks up that push and deploys.
+
+**Optional fallback:** call a Vercel deploy hook after the empty commit. Use only when the hook works in your account. Deploy hooks can be blocked, rate-limited, or insufficient on their own when the real problem is wrong pusher attribution — do not treat hook-only workflows as the sole solution for Hobby pusher issues.
+
+## Case study: expertstack
+
+[expertstack](https://github.com/creativeaihack/expertstack) uses owner empty-commit only (no deploy hook step):
+
+- Vercel Hobby connected to `creativeaihack`; collaborator pushes did not deploy.
+- Deploy hook via `curl` was blocked for the user; hook-only workflow was insufficient.
+- Workflow guard `if: github.actor != 'creativeaihack'` prevents loops when the owner's empty commit re-triggers the workflow.
+- Secret required: `OWNER_GIT_PAT` (fine-grained PAT for `creativeaihack` with Contents read/write).
+- No `VERCEL_DEPLOY_HOOK_URL` secret needed.
+
+Reference workflow: `.github/workflows/trigger-owner-deploy.yml` in that repo.
 
 ## Fast Path
 
-1. Confirm the desired PAT owner login, target branch, workflow filename, and whether Vercel deploy hook triggering is required. The PAT owner login is the GitHub user that generated the token and will appear as `github.actor`; for org-owned repos, this is usually not the organization slug.
-2. Confirm the repo can use a secret named `OWNER_GIT_PAT` containing a PAT owned by that exact PAT owner login. If the PAT is missing, expired, or returning 403, prompt the user with the detailed PAT creation steps in this skill.
-3. If Vercel deploy hooks are used, confirm `VERCEL_DEPLOY_HOOK_URL` will be added as a repository secret.
+1. Confirm the PAT owner login (the GitHub user Vercel is connected to), target branch, and workflow filename. The PAT owner login is the user who generated the token and appears as `github.actor`; for org-owned repos this is usually not the organization slug.
+2. Confirm the repo can use a secret named `OWNER_GIT_PAT` containing a PAT owned by that exact login. If the PAT is missing, expired, or returning 403, prompt the user with the PAT creation steps below.
+3. For Vercel Hobby / wrong-pusher problems, **default to owner-commit only** (installer omits the hook unless you pass `--with-vercel-hook`).
 4. Run the bundled installer from the target repo:
 
 ```bash
@@ -23,22 +37,25 @@ python /path/to/setup-owner-deploy-trigger/scripts/install_owner_deploy_trigger.
 ```
 
 5. Review the generated `.github/workflows/trigger-owner-deploy.yml`.
-6. Add the secrets in GitHub, commit the workflow, push it, then verify recent Actions runs.
+6. Add `OWNER_GIT_PAT` in GitHub → Settings → Secrets and variables → Actions, commit the workflow, push it, then verify recent Actions runs.
+
+Only add `VERCEL_DEPLOY_HOOK_URL` if you explicitly want the optional hook step (`--with-vercel-hook`).
 
 ## Required Secrets
 
-Create repository or organization secrets before expecting the workflow to pass.
+`OWNER_GIT_PAT` (**required** for the owner-commit pattern):
 
-`OWNER_GIT_PAT`:
 Personal access token generated by the GitHub user used in the workflow guard. A fine-grained token should have access to the target repo and `Contents: Read and write`. For org-owned repos, the token is still generated by a user account; the token's `Resource owner` can be the organization that owns the repo. A classic token generally needs `repo` for private repos. Do not use `GITHUB_TOKEN` for this pattern because pushes made with `GITHUB_TOKEN` do not reliably trigger follow-up workflow runs and will not represent the owner PAT identity.
 
-`VERCEL_DEPLOY_HOOK_URL`:
-Vercel deploy hook URL. Required only when the workflow includes the deploy hook step. Store the full URL as a secret; never commit it.
+`VERCEL_DEPLOY_HOOK_URL` (**optional**):
+
+Vercel deploy hook URL. Only needed when the workflow includes the deploy hook step (`--with-vercel-hook`). Store the full URL as a secret; never commit it. On Hobby, prefer owner empty-commit first; add the hook only if you need an extra trigger and the hook is not blocked.
 
 Useful `gh` commands:
 
 ```bash
 gh secret set OWNER_GIT_PAT --repo OWNER/REPO
+# Only if using --with-vercel-hook:
 gh secret set VERCEL_DEPLOY_HOOK_URL --repo OWNER/REPO
 ```
 
@@ -92,11 +109,12 @@ Generate or maintain a workflow with these properties:
 
 - Trigger on `push` to the deploy branch and `workflow_dispatch`.
 - Add a job-level guard: `if: github.actor != 'PAT_OWNER_LOGIN'`.
-- Use `actions/checkout@v4` with `token: ${{ secrets.OWNER_GIT_PAT }}`.
+- Set `permissions: contents: write`.
+- Use `actions/checkout@v4` with `token: ${{ secrets.OWNER_GIT_PAT }}`, `fetch-depth: 0`, and `ref: ${{ github.ref_name }}`.
 - Configure `git user.name` and `git user.email` as the PAT owner login and noreply address.
 - Pull the latest deploy branch with `git pull --ff-only` before creating the empty commit.
 - Push `git commit --allow-empty -m "chore: trigger deploy"` to the same branch.
-- Optionally call the Vercel deploy hook after the empty commit push.
+- Optionally call the Vercel deploy hook after the empty commit push (not recommended as the only fix for Hobby pusher attribution).
 
 The guard is essential. The owner-created empty commit triggers the workflow again, but the second run must be skipped because the actor is the owner. Without that guard, the workflow can loop.
 
@@ -104,10 +122,13 @@ The guard is essential. The owner-created empty commit triggers the workflow aga
 
 Use `scripts/install_owner_deploy_trigger.py` for repeatable setup.
 
+By default the installer generates **owner empty-commit only** (no Vercel hook), matching the expertstack pattern. Pass `--with-vercel-hook` to add the optional `curl` deploy hook step.
+
 Common commands:
 
 ```bash
 # Infer repo root from current directory, owner from origin URL when possible.
+# Default: owner empty-commit only (recommended for Vercel Hobby).
 python scripts/install_owner_deploy_trigger.py --repo .
 
 # Explicit owner and branch.
@@ -116,8 +137,8 @@ python scripts/install_owner_deploy_trigger.py --repo . --owner creativeaihack -
 # Preview without writing.
 python scripts/install_owner_deploy_trigger.py --repo . --owner creativeaihack --dry-run
 
-# Omit the Vercel hook step.
-python scripts/install_owner_deploy_trigger.py --repo . --owner creativeaihack --skip-vercel-hook
+# Add optional Vercel deploy hook step (fallback only).
+python scripts/install_owner_deploy_trigger.py --repo . --owner creativeaihack --with-vercel-hook
 
 # Overwrite an existing workflow file after review.
 python scripts/install_owner_deploy_trigger.py --repo . --owner creativeaihack --force
@@ -131,7 +152,7 @@ After pushing the workflow to GitHub:
 
 ```bash
 gh workflow list --repo OWNER/REPO
-gh run list --repo OWNER/REPO --workflow "Owner empty-commit + Vercel deploy" --limit 10
+gh run list --repo OWNER/REPO --workflow "Owner empty-commit deploy trigger" --limit 10
 git log --oneline --author PAT_OWNER_LOGIN --grep "chore: trigger deploy" -n 10
 ```
 
@@ -141,24 +162,38 @@ Expected behavior:
 - That run pushes an empty `chore: trigger deploy` commit authored and committed as the owner.
 - The owner empty commit creates a second workflow run that is `skipped`.
 - Owner-originated normal commits are also skipped by the guarded job.
+- Vercel deploys from the owner-attributed empty commit (Hobby).
 
 If the empty commit does not appear, inspect the failed run logs first, then verify PAT scope, secret name, branch protection, and whether the owner login exactly matches `github.actor`.
 
 ## Failure Modes
 
 `Resource not accessible by integration` or checkout/push permission errors:
+
 The PAT is missing, invalid, lacks contents write permission, lacks repo access, or branch protection blocks the token owner.
 
 Workflow loops:
+
 The `if: github.actor != 'PAT_OWNER_LOGIN'` guard is missing, misspelled, or using a login that does not match the PAT owner.
 
-Vercel hook fails:
-The `VERCEL_DEPLOY_HOOK_URL` secret is missing or invalid, or Vercel has disabled/regenerated the hook.
+Vercel still does not deploy after empty commit (Hobby):
+
+Confirm Vercel is connected to the same GitHub user as `PAT_OWNER_LOGIN`. The empty commit must appear in git history with that user as pusher. Check Vercel project Git integration and branch settings.
+
+When deploy hook fails or is blocked:
+
+Do not rely on hook-only automation. Switch to (or keep) the owner empty-commit pattern with `OWNER_GIT_PAT` and no hook step. Regenerate the workflow without `--with-vercel-hook`. If you still want a hook, verify `VERCEL_DEPLOY_HOOK_URL` is valid and not rate-limited — but the owner commit is what fixes Hobby pusher attribution.
+
+Vercel hook fails (when hook step is enabled):
+
+The `VERCEL_DEPLOY_HOOK_URL` secret is missing or invalid, or Vercel has disabled/regenerated the hook. Prefer removing the hook step and relying on owner empty-commit for Hobby.
 
 Push rejected:
+
 The branch advanced during the run, branch protection requires checks, signed commits, linear history constraints, or direct pushes by the PAT owner are blocked.
 
 No follow-up workflow after empty commit:
+
 The workflow used `GITHUB_TOKEN` instead of a PAT, Actions are disabled, or repository workflow permissions block the event.
 
 ## Safety Checks

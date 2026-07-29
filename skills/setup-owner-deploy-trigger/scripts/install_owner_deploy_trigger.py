@@ -11,7 +11,8 @@ from pathlib import Path
 
 
 DEFAULT_WORKFLOW_FILE = "trigger-owner-deploy.yml"
-DEFAULT_WORKFLOW_NAME = "Owner empty-commit + Vercel deploy"
+DEFAULT_WORKFLOW_NAME = "Owner empty-commit deploy trigger"
+DEFAULT_WORKFLOW_NAME_WITH_HOOK = "Owner empty-commit + Vercel deploy"
 DEFAULT_COMMIT_MESSAGE = "chore: trigger deploy"
 
 
@@ -65,6 +66,15 @@ def sq(value: str) -> str:
     return "'" + value.replace("'", "''") + "'"
 
 
+def workflow_header_comment(*, owner: str, include_vercel_hook: bool) -> str:
+    if include_vercel_hook:
+        return ""
+    return f"""# Vercel Hobby only auto-builds pushes attributed to the connected account
+# ({owner}). Non-owner pushes land on the deploy branch but do not deploy. This workflow
+# pushes an empty commit as the owner so Vercel picks up the deploy.
+"""
+
+
 def workflow_yaml(
     *,
     owner: str,
@@ -86,8 +96,10 @@ def workflow_yaml(
           curl -fsS --max-time 30 -X POST "$VERCEL_DEPLOY_HOOK_URL"
 """
 
-    return f"""name: {sq(workflow_name)}
+    header = workflow_header_comment(owner=owner, include_vercel_hook=include_vercel_hook)
 
+    return f"""name: {sq(workflow_name)}
+{header}
 on:
   push:
     branches:
@@ -124,17 +136,35 @@ jobs:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Install a GitHub Actions workflow that creates an owner empty deploy commit."
+        description=(
+            "Install a GitHub Actions workflow that creates an owner empty deploy commit. "
+            "By default omits the Vercel deploy hook (recommended for Hobby pusher attribution)."
+        )
     )
     parser.add_argument("--repo", default=".", help="Repository path. Defaults to current directory.")
     parser.add_argument("--owner", help="GitHub owner login. Inferred from origin URL when omitted.")
     parser.add_argument("--branch", default="main", help="Deploy branch. Defaults to main.")
     parser.add_argument("--workflow-file", default=DEFAULT_WORKFLOW_FILE)
-    parser.add_argument("--workflow-name", default=DEFAULT_WORKFLOW_NAME)
+    parser.add_argument(
+        "--workflow-name",
+        help=(
+            "Workflow display name. Defaults to owner-commit-only or hook-inclusive name "
+            "depending on --with-vercel-hook."
+        ),
+    )
     parser.add_argument("--owner-token-secret", default="OWNER_GIT_PAT")
     parser.add_argument("--vercel-deploy-hook-secret", default="VERCEL_DEPLOY_HOOK_URL")
     parser.add_argument("--commit-message", default=DEFAULT_COMMIT_MESSAGE)
-    parser.add_argument("--skip-vercel-hook", action="store_true")
+    parser.add_argument(
+        "--with-vercel-hook",
+        action="store_true",
+        help="Add optional Vercel deploy hook curl step after the empty commit (fallback only).",
+    )
+    parser.add_argument(
+        "--skip-vercel-hook",
+        action="store_true",
+        help=argparse.SUPPRESS,
+    )
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--force", action="store_true", help="Overwrite an existing workflow file.")
     return parser.parse_args()
@@ -153,16 +183,24 @@ def main() -> int:
     if not args.branch.strip():
         raise SystemExit("Branch cannot be empty.")
 
+    if args.with_vercel_hook and args.skip_vercel_hook:
+        raise SystemExit("Cannot pass both --with-vercel-hook and --skip-vercel-hook.")
+
+    include_vercel_hook = args.with_vercel_hook and not args.skip_vercel_hook
+    workflow_name = args.workflow_name or (
+        DEFAULT_WORKFLOW_NAME_WITH_HOOK if include_vercel_hook else DEFAULT_WORKFLOW_NAME
+    )
+
     workflow_dir = root / ".github" / "workflows"
     workflow_path = workflow_dir / args.workflow_file
     content = workflow_yaml(
         owner=owner,
         branch=args.branch,
-        workflow_name=args.workflow_name,
+        workflow_name=workflow_name,
         token_secret=args.owner_token_secret,
         vercel_secret=args.vercel_deploy_hook_secret,
         commit_message=args.commit_message,
-        include_vercel_hook=not args.skip_vercel_hook,
+        include_vercel_hook=include_vercel_hook,
     )
 
     if args.dry_run:
@@ -183,10 +221,10 @@ def main() -> int:
     print(f"Owner: {owner}")
     print(f"Branch: {args.branch}")
     print(f"Owner token secret: {args.owner_token_secret}")
-    if args.skip_vercel_hook:
-        print("Vercel hook: omitted")
-    else:
+    if include_vercel_hook:
         print(f"Vercel hook secret: {args.vercel_deploy_hook_secret}")
+    else:
+        print("Vercel hook: omitted (default; use --with-vercel-hook to add)")
     return 0
 
 
