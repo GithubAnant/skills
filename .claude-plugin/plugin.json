@@ -1,6 +1,6 @@
 {
   "name": "design-skills",
-  "description": "Personal Claude Code skills for design workflows, design system extraction, GitHub Actions deploy automation, and a Next.js GitHub-backed CMS.",
+  "description": "Personal Claude Code skills for design workflows, repo automation, frontend effects, and Tauri macOS UI debugging.",
   "version": "1.5.0",
   "author": {
     "name": "Anant Singhal",
@@ -8,5 +8,5 @@
   },
   "repository": "https://github.com/GithubAnant/skills",
   "license": "MIT",
-  "keywords": ["design", "color", "ui", "design-system", "github-actions", "vercel", "deploy", "cms", "nextjs", "editor", "blur", "backdrop-filter", "css", "infinite-scroll", "pan-grid", "react", "canvas"]
+  "keywords": ["design", "color", "ui", "design-system", "github-actions", "vercel", "deploy", "cms", "nextjs", "editor", "blur", "backdrop-filter", "css", "infinite-scroll", "pan-grid", "react", "canvas", "svg", "wave-loader", "tauri", "macos", "window-drag"]
 }

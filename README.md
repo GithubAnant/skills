@@ -15,6 +15,8 @@ A Claude Code plugin for design workflows, repo automation, and reusable agent p
 | [Infinite Pan Grid](#infinite-pan-grid) | Smooth bidirectional infinite 2D pan grids in React/Next.js — GPU transform, no scrollbars, no lag |
 | [Responsive 3D Hero](#responsive-3d-hero) | basement.studio-style wireframe R3F heroes in Next.js — per-route cameras, postFX, asset manifests, no Sanity |
 | [Create Donut Chart](#create-donut-chart) | Build lightweight, interactive, dependency-free custom SVG donut charts in React |
+| [Comfy Wave Loader](#comfy-wave-loader) | Build masked-SVG wordmark loaders with a rising liquid wave |
+| [Tauri macOS Window Drag](#tauri-macos-window-drag) | Diagnose and fix Tauri v2 macOS titlebar and window dragging |
 
 ---
 
@@ -104,6 +106,24 @@ A Claude Code plugin for design workflows, repo automation, and reusable agent p
 
 **Example triggers:**
 `"make a donut chart"` · `"build a pie chart"` · `"data visualization without recharts"` · `"circular chart with legend"`
+
+---
+
+### Comfy Wave Loader
+
+> Builds a masked-SVG wordmark loading animation where a rippling liquid wave rises through the logo. Includes plain HTML/CSS, Vue 3, reduced-motion accessibility, and guidance for adapting the effect to another wordmark.
+
+**Example triggers:**
+`"make a logo fill like liquid"` · `"build a wave loader"` · `"animated wordmark splash screen"` · `"recreate a liquid logo loading animation"`
+
+---
+
+### Tauri macOS Window Drag
+
+> Diagnoses Tauri v2 macOS custom titlebar dragging across native window configuration, webview hit regions, and capability permissions while preserving traffic lights and resize behavior.
+
+**Example triggers:**
+`"fix Tauri window dragging"` · `"hide the macOS titlebar text"` · `"only make the toolbar draggable"` · `"Tauri traffic lights disappeared"`
 
 ---
 

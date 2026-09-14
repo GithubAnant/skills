@@ -1,0 +1,23 @@
+{
+  "skill_name": "tauri-macos-window-drag",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Our Tauri 2 React macOS window uses hidden_title(true) and data-tauri-drag-region, but dragging does nothing. The window label is dashboard, capabilities/dashboard.json grants allow-start-dragging, and tauri.conf.json explicitly lists only default. Diagnose and fix the root cause without adding mouse handlers.",
+      "expected_output": "Activates the dashboard capability, verifies its window label, keeps declarative drag regions, and requires a native restart.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I hid my Tauri macOS app title, but now every card, table row, and empty area drags the window. Rust calls setMovableByWindowBackground(true). I only want blank toolbar space draggable while buttons and page content behave normally.",
+      "expected_output": "Removes AppKit background dragging and uses self-only toolbar/spacer regions with explicit non-drag controls and body.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Fix this Tauri 2 macOS titlebar: keep native red/yellow/green controls and resizing, hide the centered product name, and make gaps around the sidebar toggle draggable. Switching to Transparent removed the traffic lights and marking the whole header deep broke the toggle.",
+      "expected_output": "Uses Overlay plus hidden_title, keeps decorations, marks header background and blank spacers self-only, blocks the toggle/body, and validates in the real binary.",
+      "files": []
+    }
+  ]
+}
