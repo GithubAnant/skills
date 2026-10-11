@@ -17,6 +17,7 @@ A Claude Code plugin for design workflows, repo automation, and reusable agent p
 | [Create Donut Chart](#create-donut-chart) | Build lightweight, interactive, dependency-free custom SVG donut charts in React |
 | [Comfy Wave Loader](#comfy-wave-loader) | Build masked-SVG wordmark loaders with a rising liquid wave |
 | [Tauri macOS Window Drag](#tauri-macos-window-drag) | Diagnose and fix Tauri v2 macOS titlebar and window dragging |
+| [Filled UI Icons](#filled-ui-icons) | Create crisp custom filled SVG families with consistent weight and clean negative-space cutouts |
 
 ---
 
@@ -124,6 +125,15 @@ A Claude Code plugin for design workflows, repo automation, and reusable agent p
 
 **Example triggers:**
 `"fix Tauri window dragging"` · `"hide the macOS titlebar text"` · `"only make the toolbar draggable"` · `"Tauri traffic lights disappeared"`
+
+---
+
+### Filled UI Icons
+
+> Creates bespoke filled SVG icon families for feature grids, cards, and product UI. Includes Shogun's calendar and search seeds, optical-weight guidance, transparent cutouts, accessibility, and real-size visual checks. No icon package required.
+
+**Example triggers:**
+`"make icons like Shogun's feature grid"` · `"create a custom filled SVG icon family"` · `"use filled-ui-icons for memory, integrations, and privacy"`
 
 ---
 

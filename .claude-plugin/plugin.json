@@ -1,7 +1,7 @@
 {
   "name": "design-skills",
   "description": "Personal Claude Code skills for design workflows, repo automation, frontend effects, and Tauri macOS UI debugging.",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "author": {
     "name": "Anant Singhal",
     "url": "https://anants.studio"
